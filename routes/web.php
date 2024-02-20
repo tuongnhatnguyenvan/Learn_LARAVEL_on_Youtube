@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Middleware\CheckPermission;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\HomeController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -59,21 +61,28 @@ Route::get('/', function () {
 
 // Route::view('show-form','form');
 
+Route::get('/','App\Http\Controllers\HomeController@index')->name('home');
+Route::get('/tin-tuc','HomeController@getNews')->name('news');
+Route::get('/danh-muc',[HomeController::class,'getCategories']);
+
 Route::prefix('admin')->group(function () {
-    Route::get('/unicode', function () {
-        return view('form');
-    });
+    Route::get('/unicode/{slug?}-{id?}.html', function ($slug=null, $id=null) {
+        $content = 'Đây là dung prefix voi tham so ';
+        $content .= 'id = ' . $id .'<br>';
+        $content .= 'slug = '. $slug ;
+        return $content;
+    })->where('id', '\d+')->where('slug', '.+')->name('admin.unicode');
 
     Route::get('show-form', function () {
         return view('form');
-    });
-    Route::prefix('product')->group(function () {
+    })->name('admin.show-form');
+    Route::prefix('product')->middleware('checkpermission')->group(function () {
         Route::get('/', function () {
             return 'danh sach san pham';
         });
         Route::get('/add', function () {
             return 'them san pham';
-        });
+        })->name('admin.product.add');
         Route::get('edit', function () {
             return 'sua san pham';
         });
