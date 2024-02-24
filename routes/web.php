@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\CategoriesController;
 use App\Http\Controllers\Admin\ProductsController;
 use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\HomeController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -19,9 +20,7 @@ use App\Http\Controllers\Admin\DashboardController;
 */
 
 
-Route::get('/', function () {
-    return '<h1>Trang chu Oke</h1>';
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 //client route
 Route::prefix('categories')->group(function () {
     Route::get('/', [CategoriesController::class, 'index'])->name('categories.list');
@@ -32,7 +31,9 @@ Route::prefix('categories')->group(function () {
     Route::get('/delete/{id}', [CategoriesController::class, 'deleteCategory'])->name('categories.delete');
 });
 
+Route::get('/san-pham/{id}', [HomeController::class, 'getProductsDetail']);
+
 Route::middleware('auth.admin')->prefix('admin')->group(function () {
-    Route::get('/',[ DashboardController::class, 'index']);
+    Route::get('/', [DashboardController::class, 'index']);
     Route::resource('products', ProductsController::class)->middleware('auth.admin.product');
 });
