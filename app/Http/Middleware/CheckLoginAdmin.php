@@ -19,11 +19,13 @@ class CheckLoginAdmin
         if(!$this->isLogin()){
             return redirect(route('home'));
         }
-        // echo 'Middleware request';
+        if($request->is('admin/*')){
+            echo '<h3>Khu vuc quan tri</h3>';
+        }
         return $next($request);
     }
     public function isLogin()
     {
-        return false;
+        return true;
     }
 }
