@@ -20,9 +20,9 @@ use App\Http\Controllers\HomeController;
 */
 
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home')->middleware('auth.admin');
 //client route
-Route::prefix('categories')->group(function () {
+Route::middleware('auth.admin')->prefix('categories')->group(function () {
     Route::get('/', [CategoriesController::class, 'index'])->name('categories.list');
     Route::get('/edit/{id}', [CategoriesController::class, 'getCategory'])->name('categories.edit');
     Route::post('/edit/{id}', [CategoriesController::class, 'updateCategory'])->name('categories.update');
