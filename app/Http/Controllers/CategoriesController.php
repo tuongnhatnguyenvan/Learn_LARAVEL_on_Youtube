@@ -39,11 +39,13 @@ class CategoriesController extends Controller
         // echo $id;
         // $input = $request->input();
         // $id = $request->id;
+        // $id = $request->query('id');
+        $query = $request->query();
         // $name = $request->name;
         // dd($name);
         // dd(request());
-        $id =request('id','Unicode');
-        dd($id);
+        // $id =request('id','Unicode');
+        dd($query);
         return view('clients/categories/list');
     }
 
@@ -59,9 +61,12 @@ class CategoriesController extends Controller
 
     public function addCategory(Request $request)
     {
-        $path = $request->path();
-        echo $path;
-        return view('clients/categories/add');
+        // $path = $request->path();
+
+        $categoryName = $request->old('category_name', 'Mac dinh');
+        echo $categoryName;
+        // echo $old;
+        return view('clients/categories/add', compact('categoryName'));
     }
 
     public function handleAddCategory(Request $request)
@@ -73,10 +78,48 @@ class CategoriesController extends Controller
         // if($request->isMethod('POST')){
         //     echo 'Phuong thuc POST';
         // }
+        // $category = $request->id;
+        if ($request->has('category_name')) {
+            $category = $request->category_name;
+            $request->flash();
+            return redirect(route('categories.add'));
+            // dd($category);
+        } else {
+            return 'Khong co ten category';
+        }
     }
 
     public function deleteCategory($id)
     {
         return 'Submit xoa chuyen muc ' . $id;
+    }
+
+    //xu ly day thong tin file
+    public function handleFile(Request $request)
+    {
+        // $file = $request->file('photo');
+        if ($request->hasFile('photo')) {
+            if ($request->file('photo')->isValid()) {
+                $file = $request->photo;
+                // $path = $file->path();
+                // $path = $file->store('file-txt', 'local');
+                // $path = $file->storeAs('file-txt', 'khoa-hoc.txt');
+                $ext = $file->extension();
+                // $fileName = $file->getClientOriginalName();
+                $fileName = md5(uniqid()). '.'. $file->extension();
+                dd($fileName);
+            }else{
+                return 'Upload khong thanh cong';
+            }
+        }else{
+            return 'Vui long chon  file';
+        }
+
+        // dd($file);
+    }
+
+    public function getFile(Request $request)
+    {
+        return view('clients/categories/file');
     }
 }
