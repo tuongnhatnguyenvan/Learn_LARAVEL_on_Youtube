@@ -29,6 +29,8 @@ Route::middleware('auth.admin')->prefix('categories')->group(function () {
     Route::get('/add', [CategoriesController::class, 'addCategory'])->name('categories.add');
     Route::post('/add', [CategoriesController::class, 'handleAddCategory'])->name('categories.handleAdd');
     Route::get('/delete/{id}', [CategoriesController::class, 'deleteCategory'])->name('categories.delete');
+    Route::post('/upload', [CategoriesController::class, 'handleFile'])->name('categories.upload');
+    Route::get('/upload', [CategoriesController::class, 'getFile']);
 });
 
 Route::get('/san-pham/{id}', [HomeController::class, 'getProductsDetail']);
